@@ -3,6 +3,9 @@ package com.buimanhthanh.admin.user;
 import com.buimanhthanh.common.entity.Role;
 import com.buimanhthanh.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +16,19 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 public class UserService {
-
+    public static final int USER_PER_PAGE = 4;
     @Autowired private UserRepository userRepo;
     @Autowired private RoleRepository roleRepo;
     @Autowired private BCryptPasswordEncoder passwordEncoder;
 
     public List<User> findAll(){
         return (List<User>) userRepo.findAll();
+    }
+
+    public Page<User> findByPage(int page){
+        int page2 = page < 0 ? 0 : page;
+        Pageable pageable = PageRequest.of(page-1,USER_PER_PAGE);
+        return userRepo.findAll(pageable);
     }
 
     public List<Role> findAllRole(){

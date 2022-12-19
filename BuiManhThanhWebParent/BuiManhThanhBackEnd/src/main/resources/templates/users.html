@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Home - Bui Manh Thanh Admin</title>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
@@ -12,13 +13,14 @@
     <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
 </head>
 <body>
-    <div class="container-fluid">
+<div class="container-fluid">
     <div>
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
             <a class="navbar-brand" th:href="@{/}">
                 <img th:src="@{/images/logo.png}" height="48"/>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar" aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
+                    aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="topNavbar">
@@ -67,76 +69,100 @@
     <div>
         <table class="table table-responsive-xl table-bordered table-striped table-hover">
             <thead class="table-dark">
-                <tr>
-                    <th>User ID</th>
-                    <th>Photos</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Roles</th>
-                    <th>Enabled</th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>User ID</th>
+                <th>Photos</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Roles</th>
+                <th>Enabled</th>
+                <th>Action</th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="user : ${users}">
-                    <td>[[${user.id}]]</td>
-                    <td>
-                        [[${user.photos}]]
-                        <i class="fa-solid fa-image-portrait fa-3x icon-dark"></i>
-                    </td>
-                    <td>[[${user.firstName}]]</td>
-                    <td>[[${user.lastName}]]</td>
-                    <td>[[${user.roles}]]</td>
-                    <td>
-                        <a  th:if="${user.enabled == true}" th:href="@{'/users/'+${user.id}+'/enabled/false'}">
-                            <i class="fa-solid fa-circle-check icon-green fa-2x"></i>
-                        </a>
-                        <a  th:if="${user.enabled == false}" th:href="@{'/users/'+${user.id}+'/enabled/true'}">
-                            <i  class="fa-solid fa-circle-check icon-dark fa-2x"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="@{'/users/edit/' + ${user.id}}" th:title="|Edit ${user.firstName} ${user.lastName}|" class="fa-solid fa-pen-to-square fa-2x icon-dark"></a>
-                        <a th:userId="${user.id}"  class="fa-regular fa-trash-can fa-2x icon-red e-delete" th:href="@{'/users/delete/' + ${user.id}}" th:title="|Delete ${user.firstName} ${user.lastName}|"></a>
-                    </td>
-                </tr>
+            <tr th:each="user : ${users}">
+                <td>[[${user.id}]]</td>
+                <td>
+                    [[${user.photos}]]
+                    <i class="fa-solid fa-image-portrait fa-3x icon-dark"></i>
+                </td>
+                <td>[[${user.firstName}]]</td>
+                <td>[[${user.lastName}]]</td>
+                <td>[[${user.roles}]]</td>
+                <td>
+                    <a th:if="${user.enabled == true}" th:href="@{'/users/'+${user.id}+'/enabled/false'}">
+                        <i class="fa-solid fa-circle-check icon-green fa-2x"></i>
+                    </a>
+                    <a th:if="${user.enabled == false}" th:href="@{'/users/'+${user.id}+'/enabled/true'}">
+                        <i class="fa-solid fa-circle-check icon-dark fa-2x"></i>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="@{'/users/edit/' + ${user.id}}" th:title="|Edit ${user.firstName} ${user.lastName}|"
+                       class="fa-solid fa-pen-to-square fa-2x icon-dark"></a>
+                    <a th:userId="${user.id}" class="fa-regular fa-trash-can fa-2x icon-red e-delete"
+                       th:href="@{'/users/delete/' + ${user.id}}"
+                       th:title="|Delete ${user.firstName} ${user.lastName}|"></a>
+                </td>
+            </tr>
             </tbody>
         </table>
+        <div>
+            <nav aria-label="Page navigation">
+                <span>Showing user # [[${startItem}]] to [[${endItem}]] of [[${totalItem}]]</span>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${curPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a class="page-link" th:href="@{'/users/page/'+ ${curPage-1}}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li th:class="${curPage != i ? 'page-item' : 'page-item active'}" th:each="i : ${#numbers.sequence(1, totalPage)}"><a class="page-link" th:href="@{'/users/page/' + ${i}}">[[${i}]]</a></li>
+
+                    <li th:class="${curPage >= totalPage ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/users/page/'+ ${curPage+1}}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-        <div class="modal fade text-center" id="confirmModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Delete Confirmation</h3>
-                        <button type="button" class="btn-close"  onclick="$('#confirmModal').modal('hide');"></button>
-                    </div>
-                    <div class="modal-body">
+    <div class="modal fade text-center" id="confirmModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Delete Confirmation</h3>
+                    <button type="button" class="btn-close" onclick="$('#confirmModal').modal('hide');"></button>
+                </div>
+                <div class="modal-body">
                     <span id="modalBody">
 
                     </span>
-                    </div>
-                    <div class="modal-footer">
-                        <a type="button" class="btn btn-success" id="yes-btn">Yes</a>
-                        <button type="button" class="btn btn-danger" onclick="$('#confirmModal').modal('hide');">No</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-success" id="yes-btn">Yes</a>
+                    <button type="button" class="btn btn-danger" onclick="$('#confirmModal').modal('hide');">No</button>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(()=>{
-        $(".e-delete").on("click",function(e){
+    $(document).ready(() => {
+        $(".e-delete").on("click", function (e) {
             e.preventDefault()
             $("#confirmModal").modal("show")
 
             let userId = $(this).attr("userId");
 
-            $("#yes-btn").attr("href",$(this).attr("href"))
-            $("#modalBody").text("Are you sure delete this user id : "+ userId +" ?")
+            $("#yes-btn").attr("href", $(this).attr("href"))
+            $("#modalBody").text("Are you sure delete this user id : " + userId + " ?")
         })
     })
 
-    
+
 </script>
 </body>
 </html>
